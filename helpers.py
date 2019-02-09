@@ -23,6 +23,8 @@ def load_dataset(image_dir):
             # Read in the image
             im = cv2.imread(file)
             
+            im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+            
             # Check if the image exists/if it's been correctly read-in
             if not im is None:
                 # Append the image, and it's type (red, green, yellow) to the image list
@@ -34,13 +36,13 @@ def load_dataset(image_dir):
 ## Standardize the input images
 # Resize each image to the desired input size: 600x1100px (hxw).
 # This function should take in an RGB image and return a new, standardized version
-def standardize_input(image, width, height):
+def standardize_input(image, width=1100, height=600):
     
     # Resize image and pre-process so that all "standard" images are the same size
     # cv2.resize
-    standard_im = none
+    standardized_im = cv2.resize(image, (width, height))
     
-    return standard_im
+    return standardized_im
 
 # With each loaded image, we also specify the expected output. 
 # For this, we use binary numerical values 0/1 = night/day.
@@ -48,10 +50,9 @@ def standardize_input(image, width, height):
 # encode("day") should return: 1
 # encode("night") should return: 0
 def encode(label):
-        
-    numerical_val = 0
-    
-    return numerical_val
+    if label == 'day':
+        return 1
+    return 0
 
 
 ## Standardize the output using both functions above, standardize the input images and output labels
@@ -64,10 +65,12 @@ def standardize(image_list):
     for item in image_list:
         
         # Standardize the image
+        im_standardized = standardize_input(item[0])
         
         # Create a numerical label
+        im_label = encode(item[1])
         
         # Append the image, and it's one hot encoded label to the full, processed list of image data 
-        
+        standard_list.append((im_standardized, im_label))
         
     return standard_list
